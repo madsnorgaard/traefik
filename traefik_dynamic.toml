@@ -1,0 +1,21 @@
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "admin:SUPERSECRETPASSWORD"
+  ]
+
+[http.routers.api]
+  rule = "Host(`monitor.mydomain.example`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  [http.routers.api.tls]
+    certResolver = "lets-encrypt"
+
+[tls.options]
+
+  [tls.options.default]
+    minVersion = "VersionTLS12"
+    sniStrict = true
+
+  [tls.options.mintls13]
+    minVersion = "VersionTLS13"

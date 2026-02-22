@@ -1,0 +1,26 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_recreate:
+        description: 'Force recreate containers'
+        type: boolean
+        default: false
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deploy
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          repository: madsnorgaard/contabo-infrastructure
+          event-type: platform-deploy
+          client-payload: |
+            {
+              "project_dir": "traefik",
+              "project_type": "traefik",
+              "force_recreate": "${{ inputs.force_recreate || false }}"
+            }

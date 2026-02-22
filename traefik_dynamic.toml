@@ -1,16 +1,22 @@
+# Dashboard authentication
+# Generate a hashed password with: htpasswd -nb username password
+# Or online: https://www.htpasswd.ca/
 [http.middlewares.simpleAuth.basicAuth]
   users = [
-    "admin:SUPERSECRETPASSWORD"
+    "admin:$apr1$your_hashed_password_here"
   ]
 
+# Traefik dashboard router
+# Replace monitor.yourdomain.com with your actual monitoring domain
 [http.routers.api]
-  rule = "Host(`monitor.mydomain.example`)"
+  rule = "Host(`monitor.yourdomain.com`)"
   entrypoints = ["websecure"]
   middlewares = ["simpleAuth"]
   service = "api@internal"
   [http.routers.api.tls]
     certResolver = "lets-encrypt"
 
+# TLS configuration
 [tls.options]
 
   [tls.options.default]

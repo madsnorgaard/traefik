@@ -1,0 +1,7 @@
+# Let's Encrypt certificates - contains real certs, never commit
+acme.json
+
+# Environment files
+.env
+*.env
+!.env.example

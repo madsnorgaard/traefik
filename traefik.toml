@@ -11,6 +11,12 @@
 [api]
   dashboard = true
 
+[metrics]
+  [metrics.prometheus]
+    addEntryPointsLabels = true
+    addServicesLabels = true
+    addRoutersLabels = true
+
 [certificatesResolvers.lets-encrypt.acme]
   # Your email for Let's Encrypt certificate notifications
   email = "your@email.com"

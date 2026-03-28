@@ -16,6 +16,17 @@
   [http.routers.api.tls]
     certResolver = "lets-encrypt"
 
+# Bitwarden — static route (Docker provider not picking up container)
+[http.routers.bitwarden]
+  rule = "Host(`bitwarden.theazanianprepper.online`)"
+  service = "bitwarden"
+  [http.routers.bitwarden.tls]
+    certResolver = "lets-encrypt"
+
+[http.services.bitwarden.loadbalancer]
+  [[http.services.bitwarden.loadbalancer.servers]]
+    url = "http://bitwarden-bitwarden-1:80/"
+
 # TLS configuration
 [tls.options]
 

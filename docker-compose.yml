@@ -1,11 +1,12 @@
 services:
   traefik:
-    image: traefik:v2.2
+    image: traefik:v3.0
     container_name: traefik
     restart: always
     ports:
       - "80:80"
       - "443:443"
+      - "127.0.0.1:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.toml:/traefik.toml:ro

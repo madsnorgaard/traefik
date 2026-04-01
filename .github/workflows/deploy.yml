@@ -22,5 +22,7 @@ jobs:
             {
               "project_dir": "traefik",
               "project_type": "traefik",
+              "sync_code": "true",
+              "sync_files": "docker-compose.yml traefik.toml traefik_dynamic.toml",
               "force_recreate": "${{ inputs.force_recreate || false }}"
             }

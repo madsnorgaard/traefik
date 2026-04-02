@@ -128,7 +128,15 @@ labels:
 
 ## Dashboard
 
-Access the Traefik dashboard at `https://monitor.yourdomain.com` (as configured in `traefik_dynamic.toml`).
+The Traefik dashboard is available internally at `http://<VPS2-IP>:8080` via the `api.insecure = true` setting in `traefik.toml`.
+
+To expose it publicly behind TLS, add a docker-compose label to the traefik service using your real domain:
+```yaml
+- "traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)"
+- "traefik.http.routers.api.tls.certresolver=lets-encrypt"
+- "traefik.http.routers.api.middlewares=simpleAuth"
+- "traefik.http.routers.api.service=api@internal"
+```
 
 ## File Structure
 

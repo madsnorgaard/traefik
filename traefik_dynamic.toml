@@ -7,14 +7,9 @@
   ]
 
 # Traefik dashboard router
-# Replace monitor.yourdomain.com with your actual monitoring domain
-[http.routers.api]
-  rule = "Host(`monitor.yourdomain.com`)"
-  entrypoints = ["websecure"]
-  middlewares = ["simpleAuth"]
-  service = "api@internal"
-  [http.routers.api.tls]
-    certResolver = "lets-encrypt"
+# To expose the dashboard publicly, add this as a docker-compose label with ${TRAEFIK_DASHBOARD_DOMAIN}
+# Example label: traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)
+# For now, the dashboard is available internally via port 8080 (api.insecure = true in traefik.toml)
 
 # TLS configuration
 [tls.options]

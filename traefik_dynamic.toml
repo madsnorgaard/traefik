@@ -6,6 +6,37 @@
     "admin:$apr1$your_hashed_password_here"
   ]
 
+# IP allowlist for admin-only services: Grafana, phpMyAdmin, Portainer
+# HOW TO USE: Add middleware label to a router in docker-compose:
+#   traefik.http.routers.SERVICE.middlewares=admin-ipallowlist@file
+# REPLACE YOUR_HOME_IP with your real public IP — find it with: curl -s ifconfig.me
+[http.middlewares.admin-ipallowlist.ipAllowList]
+  sourceRange = [
+    "127.0.0.1/32",
+    "VPS1_IP/32",            # Replace on VPS2 with real VPS1 IP (jump host)
+    "YOUR_HOME_IP/32"        # Replace on VPS2 with your home/office IP (curl -s ifconfig.me from local machine)
+  ]
+
+# Rate limiting for publicly-accessible auth services (Bitwarden, Grafana)
+# 30 requests/min per IP with a burst of 10 — blocks credential stuffing while
+# allowing normal password manager sync and dashboard use
+[http.middlewares.auth-ratelimit.rateLimit]
+  average = 30
+  period = "1m"
+  burst = 10
+
+# Security headers applied globally via websecure entrypoint (see traefik.toml)
+# Safe for all services — avoids frameDeny/CSP which break Grafana and Nextcloud
+[http.middlewares.security-headers.headers]
+  forceSTSHeader = true
+  stsSeconds = 31536000
+  stsIncludeSubdomains = true
+  contentTypeNosniff = true
+  browserXssFilter = true
+  referrerPolicy = "strict-origin-when-cross-origin"
+  [http.middlewares.security-headers.headers.customResponseHeaders]
+    X-Permitted-Cross-Domain-Policies = "none"
+
 # Traefik dashboard router
 # To expose the dashboard publicly, add this as a docker-compose label with ${TRAEFIK_DASHBOARD_DOMAIN}
 # Example label: traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)

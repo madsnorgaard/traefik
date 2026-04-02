@@ -6,7 +6,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+      # Port 8080 intentionally NOT published — dashboard only accessible from VPS2 localhost
+      # To access dashboard: ssh -L 8080:localhost:8080 webadmin@VPS2 -p 22022
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.toml:/traefik.toml:ro

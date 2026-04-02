@@ -12,6 +12,7 @@ services:
       - ./traefik.toml:/traefik.toml:ro
       - ./traefik_dynamic.toml:/traefik_dynamic.toml:ro
       - ./acme.json:/acme.json
+      - ./logs:/log
     networks:
       - web
 

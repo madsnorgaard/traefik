@@ -37,3 +37,12 @@
     permanent = true
     regex = "https://(.*)/.well-known/(card|cal)dav"
     replacement = "https://${1}/remote.php/dav/"
+
+[accessLog]
+  filePath = "/log/access.log"
+  format = "json"
+  [accessLog.fields.headers]
+    defaultMode = "drop"
+    [accessLog.fields.headers.names]
+      "User-Agent" = "keep"
+      "Referer"    = "keep"

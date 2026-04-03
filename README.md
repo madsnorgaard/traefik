@@ -1,6 +1,6 @@
-# Traefik v2 - Reverse Proxy for Docker on a Single VPS
+# Traefik v3 - Reverse Proxy for Docker on a Single VPS
 
-A production-ready Traefik v2 setup for running multiple web applications on a single VPS. Handles SSL termination, HTTP→HTTPS redirects, and automatic Let's Encrypt certificates for all your Docker containers.
+A production-ready Traefik v3 setup for running multiple web applications on a single VPS. Handles SSL termination, HTTP→HTTPS redirects, and automatic Let's Encrypt certificates for all your Docker containers.
 
 ## What This Does
 
@@ -128,15 +128,13 @@ labels:
 
 ## Dashboard
 
-The Traefik dashboard is available internally at `http://<VPS2-IP>:8080` via the `api.insecure = true` setting in `traefik.toml`.
+The Traefik dashboard is not exposed publicly. Access it via SSH tunnel:
 
-To expose it publicly behind TLS, add a docker-compose label to the traefik service using your real domain:
-```yaml
-- "traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)"
-- "traefik.http.routers.api.tls.certresolver=lets-encrypt"
-- "traefik.http.routers.api.middlewares=simpleAuth"
-- "traefik.http.routers.api.service=api@internal"
+```bash
+ssh -L 8080:localhost:8080 webadmin@yourserver -p 22022
 ```
+
+Then open `http://localhost:8080` in your browser.
 
 ## File Structure
 
@@ -149,12 +147,8 @@ To expose it publicly behind TLS, add a docker-compose label to the traefik serv
 └── .gitignore
 ```
 
-## Upgrading to Traefik v3
-
-Traefik v3 introduces breaking changes in Docker label syntax. Before upgrading, review the [official migration guide](https://doc.traefik.io/traefik/migration/v2-to-v3/).
-
 ## References
 
-- [Traefik v2 Documentation](https://doc.traefik.io/traefik/v2.2/)
+- [Traefik v3 Documentation](https://doc.traefik.io/traefik/)
+- [Traefik v2 to v3 Migration Guide](https://doc.traefik.io/traefik/migration/v2-to-v3/)
 - [Let's Encrypt](https://letsencrypt.org/)
-- [DigitalOcean Tutorial](https://www.digitalocean.com/community/tutorials/how-to-use-traefik-v2-as-a-reverse-proxy-for-docker-containers-on-ubuntu-20-04)

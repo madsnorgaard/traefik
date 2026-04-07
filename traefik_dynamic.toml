@@ -26,16 +26,26 @@
   burst = 10
 
 # Security headers applied globally via websecure entrypoint (see traefik.toml)
-# Safe for all services — avoids frameDeny/CSP which break Grafana and Nextcloud
+# CSP is NOT set here — it must be per-service (see individual docker-compose files)
 [http.middlewares.security-headers.headers]
   forceSTSHeader = true
   stsSeconds = 31536000
   stsIncludeSubdomains = true
   contentTypeNosniff = true
-  browserXssFilter = true
+  # browserXssFilter removed — X-XSS-Protection is deprecated and can introduce vulnerabilities
   referrerPolicy = "strict-origin-when-cross-origin"
+  # SAMEORIGIN is safe for all services including Grafana/Nextcloud (they use iframes internally)
+  customFrameOptionsValue = "SAMEORIGIN"
+  permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
   [http.middlewares.security-headers.headers.customResponseHeaders]
     X-Permitted-Cross-Domain-Policies = "none"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    # Strip server/technology fingerprinting from all responses
+    Server = ""
+    X-Powered-By = ""
+    X-Generator = ""
+    # Remove deprecated X-XSS-Protection set by upstream apps
+    X-XSS-Protection = ""
 
 # Traefik dashboard router
 # To expose the dashboard publicly, add this as a docker-compose label with ${TRAEFIK_DASHBOARD_DOMAIN}

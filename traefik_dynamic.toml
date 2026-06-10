@@ -17,6 +17,23 @@
     "YOUR_HOME_IP/32"        # Replace on VPS2 with your home/office IP (curl -s ifconfig.me from local machine)
   ]
 
+# Dev gate for omar.madsnorgaard.net (pre-launch dev site, must not be
+# public or indexed). Referenced from the site's docker-compose router label
+# as omar-dev-gate@file - a chain, because basicAuth and headers are
+# different middleware types.
+# Generate the hash with: htpasswd -nB omar  (replace on VPS2 with the real hash)
+[http.middlewares.omar-dev-auth.basicAuth]
+  users = [
+    "omar:$2y$REPLACE_WITH_REAL_BCRYPT_HASH"
+  ]
+
+[http.middlewares.omar-dev-noindex.headers]
+  [http.middlewares.omar-dev-noindex.headers.customResponseHeaders]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[http.middlewares.omar-dev-gate.chain]
+  middlewares = ["omar-dev-auth", "omar-dev-noindex"]
+
 # Rate limiting for publicly-accessible auth services (Bitwarden, Grafana)
 # 30 requests/min per IP with a burst of 10 — blocks credential stuffing while
 # allowing normal password manager sync and dashboard use
